@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { v4 as uuidv4 } from 'uuid';  
+import { v4 as uuidv4 } from 'uuid';
 
 // Define a City class with name and id properties
 class City {
@@ -18,13 +18,13 @@ class HistoryService {
   private async read() {
     try {
       const data = await fs.readFile('db/searchHistory.json', {
-        flag: 'a+',  
+        flag: 'a+',
         encoding: 'utf8',
       });
       return data;
     } catch (err) {
       console.error('Error reading file:', err);
-      return '[]'; 
+      return '[]';
     }
   }
 
@@ -37,7 +37,7 @@ class HistoryService {
     }
   }
 
- 
+
   async getCities() {
     const cities = await this.read();
     let parsedCities: City[] = [];
@@ -55,11 +55,19 @@ class HistoryService {
   async addCity(_city: string) {
     const newCity: City = new City(_city, uuidv4());
     const cities = await this.getCities();
-    cities.push(newCity);
+    if (!cities.some((history) => history.name.toLowerCase() === _city.toLocaleLowerCase())) {
+      cities.push(newCity);
+    };
     await this.write(cities);
   }
-}
+  
+  async removeCity(id: string) {
+    const cities = await this.getCities();
+    const history = cities.filter((item) => item.id != id); 
+    await this.write(history);
 
+  }
+}
 export default new HistoryService();
 // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
 

@@ -112,10 +112,10 @@ class WeatherService {
   }
   // TODO: Build parseCurrentWeather method
   private parseCurrentWeather(response: any) {
-    //console.log(response)
+    console.log(response)
     const currentWeather = new Weather(
       this.city,
-      response.main.date,
+      response.dt_txt,
       response.main.temp,
       response.main.humidity,
       response.weather[0].icon,
